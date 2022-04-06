@@ -66,7 +66,7 @@ void setup()
 
      timer = timerBegin(0, 80, true);
      timerAttachInterrupt(timer, &onTimer, true);
-     timerAlarmWrite(timer, 100000, true);
+     timerAlarmWrite(timer, 70000, true);
       timerAlarmEnable(timer);
 
     float calibrationValue;     // calibration value
@@ -104,11 +104,12 @@ float weigh()
     signled=false;
     timerAlarmDisable(timer);
     timerAlarmWrite(timer,700000,true);
-    while (!signled) 
-    do {}
+
+  
     while(!newDataReady);
         float i = LoadCell.getData();
         newDataReady = 0;
+    timerAlarmEnable(timer);
         return i;
     
 
@@ -122,22 +123,15 @@ void loop()
         char inByte = Serial.read();
         if (inByte == 'w')
         {
-            timerAlarmDisable(timer);
+          //  timerAlarmDisable(timer);
             newDataReady = 0;
-            signled=false;
+          //  signled=false;
           //  timerAlarmWrite(timer, 7000, true);
          
-            do {
-             printf("*");
-            }
-            while  (!signled);
+           
+            while  (!signled); timerAlarmEnable(timer);
             printf("\n\nMeasuring \n");
           
-
-
-
-           
-
             float i = weigh();
             printf("Loadcell Value=%.1lf time %lu tare complete=%i\n", i, millis() - t,1);
             t = millis();
