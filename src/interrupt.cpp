@@ -64,15 +64,17 @@ void setup()
     Serial.println();
     Serial.println("Interrupt.cpp is starting...");
 
-     timer = timerBegin(0, 80, true);
-     timerAttachInterrupt(timer, &onTimer, true);
-     timerAlarmWrite(timer, 70000, true);
-      timerAlarmEnable(timer);
+  //   timer = timerBegin(0, 80, true);
+  //   timerAttachInterrupt(timer, &onTimer, true);
+   //  timerAlarmWrite(timer, 70000, true);
+  //    timerAlarmEnable(timer);
 
     float calibrationValue;     // calibration value
   //  calibrationValue = -900.57; // uncomment this if you want to set this value in the sketch
  //   calibrationValue= -891.90;
   calibrationValue = -857.72;// 1kg cell @5v
+  calibrationValue = -903.03;// 1kg cell 3.3v inner cantilever
+  
 #if defined(ESP8266) || defined(ESP32)
     // EEPROM.begin(512); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
 #endif
@@ -100,18 +102,14 @@ void setup()
 
 float weigh()
 {
-    const int serialPrintInterval = 0; // increase value to slow down serial print activity
-    signled=false;
-    timerAlarmDisable(timer);
-    timerAlarmWrite(timer,700000,true);
+    //const int serialPrintInterval = 7000; // increase value to slow down serial print activity
 
   
     while(!newDataReady);
         float i = LoadCell.getData();
         newDataReady = 0;
-    timerAlarmEnable(timer);
         return i;
-    
+   
 
 }
 #define noop
@@ -129,7 +127,7 @@ void loop()
           //  timerAlarmWrite(timer, 7000, true);
          
            
-            while  (!signled); timerAlarmEnable(timer);
+         
             printf("\n\nMeasuring \n");
           
             float i = weigh();
@@ -146,7 +144,7 @@ void loop()
             {
              } while (!LoadCell.getTareStatus());
             
-            printf("completed ,elapsed ms= %i\n",millis()-t);
+            printf("completed ,elapsed ms= %lu\n",millis()-t);
         }
     }
 }
